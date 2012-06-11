@@ -74,7 +74,7 @@ copyUboot ()
 mountPartitions ()
 {
 	echo "Mount image partitions"
-	loop_device=`sudo kpartx -l ../mele-sd-4gb-lui-5.2.90.img | grep p1 | awk '{ print $5 }' | cut -c10`
+	loop_device=`sudo kpartx -l ../$2 | grep p1 | awk '{ print $5 }' | cut -c10`
 	sudo kpartx -a $2 >> makesd.log
 	if [ $? -ne 0 ]; then
 		echo "Failed to run kpart"
