@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # Usage ./makeSD.sh /dev/sdx hwpack rootfs
 
 logfile=a1x-media-create.log
