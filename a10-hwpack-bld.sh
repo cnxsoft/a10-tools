@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Build script for A10 hardware pack
 # a10-hwpack-bld.sh product_name
