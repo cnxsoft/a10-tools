@@ -166,7 +166,7 @@ copyData ()
 		cleanup
 	fi 
 	echo "Copy rootfs partition files to SD Card"
-        if [ -d rootfs.tmp/etc/init ]; then
+        if [ -d rootfs.tmp/etc ]; then
            echo "Standard rootfs"
 	   sudo cp -a rootfs.tmp/* mntSDrootfs >> ${logfile}
         elif [ -d rootfs.tmp/binary/boot/filesystem.dir ]; then
