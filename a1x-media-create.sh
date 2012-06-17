@@ -33,6 +33,11 @@ umountSD () {
 }
 
 partitionSD () {
+    devicename=${1##/*/}
+    subdevice=$1;
+    if [ ${devicename:0:6} = "mmcblk" ]; then
+        subdevice="${1}p"
+    fi
 
 	echo "Delete Existing Partition Table"
 	sudo dd if=/dev/zero of=$1 bs=1M count=1 >> ${logfile} 
@@ -43,30 +48,30 @@ partitionSD () {
 		echo "Failed to create label for $1"
 		exit 1
 	fi 
-	echo "Partition 1 - ${1}1"
+	echo "Partition 1 - ${subdevice}1"
 	sudo parted $1 --script mkpart primary fat32 2048s 16MB >> ${logfile}
 	if [ $? -ne 0 ]; then
-		echo "Failed to create ${1}1 partition" 
+		echo "Failed to create ${subdevice}1 partition" 
 		exit 1
 	fi 
-	vfat_end=` sudo fdisk -lu $1 | grep ${1}1 | awk '{ print $3 }' `
+	vfat_end=` sudo fdisk -lu $1 | grep ${subdevice}1 | awk '{ print $3 }' `
 	ext4_offset=`expr $vfat_end + 1`
 	echo "Partition 2 (Starts at sector No. $ext4_offset)"
 	sudo parted $1 --script mkpart primary ext4 ${ext4_offset}s -- -1 >> ${logfile}
 	if [ $? -ne 0 ]; then
-		echo "Failed to create ${1}2 partition"
+		echo "Failed to create ${subdevice}2 partition"
 		exit 1
 	fi 
 	echo "Format Partition 1 to VFAT"
-	sudo mkfs.vfat ${1}1 >> ${logfile}
+	sudo mkfs.vfat ${subdevice}1 >> ${logfile}
 	if [ $? -ne 0 ]; then
-		echo "Failed to format ${1}1 partition"
+		echo "Failed to format ${subdevice}1 partition"
 		exit 1
 	fi 
 	echo "Format Partition 2 to EXT-4"
-	sudo mkfs.ext4 ${1}2 >> ${logfile}
+	sudo mkfs.ext4 ${subdevice}2 >> ${logfile}
 	if [ $? -ne 0 ]; then
-		echo "Failed to format ${1}2 partition"
+		echo "Failed to format ${subdevice}2 partition"
 		exit 1
 	fi 
 }
@@ -113,6 +118,12 @@ copyUboot ()
 
 mountPartitions ()
 {
+    devicename=${1##/*/}
+    subdevice=$1;
+    if [ ${devicename:0:6} = "mmcblk" ]; then
+        subdevice="${1}p"
+    fi
+
 	echo "Mount SD card partitions"
 	mkdir -p mntSDvfat mntSDrootfs >> ${logfile}
 	if [ $? -ne 0 ]; then
@@ -120,13 +131,13 @@ mountPartitions ()
 		cleanup
 	fi 
 	echo "Mount VFAT Parition (SD)" 
-	sudo mount ${1}1 mntSDvfat >> ${logfile}
+	sudo mount ${subdevice}1 mntSDvfat >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to mount VFAT partition (SD)"
 		cleanup
 	fi 
 	echo "Mount EXT4 Parition (SD)" 
-	sudo mount ${1}2 mntSDrootfs >> ${logfile}
+	sudo mount ${subdevice}2 mntSDrootfs >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to mount EXT4 partition (SD)"
 		cleanup
