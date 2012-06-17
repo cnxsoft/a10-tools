@@ -66,8 +66,7 @@ then
     fi
     try pushd a10-config/script.fex >> ${make_log} 2>&1
     echo "Generating ${board}.bin file"
-    # cnxsoft: can't use try with fex2bin (wrong exit code)
-    fex2bin ${board}.fex > ${board}.bin
+    try fex2bin ${board}.fex > ${board}.bin
     popd >> ${make_log} 2>&1
     touch .script.${board}
 fi
