@@ -67,13 +67,13 @@ partitionSD () {
 		exit 1
 	fi 
 	echo "Format Partition 1 to VFAT"
-	sudo mkfs.vfat ${subdevice}1 >> ${logfile}
+	sudo mkfs.vfat -I ${subdevice}1 >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to format ${subdevice}1 partition"
 		exit 1
 	fi 
 	echo "Format Partition 2 to EXT-4"
-	sudo mkfs.ext4 ${subdevice}2 >> ${logfile}
+	sudo mkfs.ext4  ${subdevice}2 >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to format ${subdevice}2 partition"
 		exit 1
