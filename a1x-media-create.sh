@@ -39,6 +39,10 @@ partitionSD () {
         subdevice="${1}p"
     fi
 
+    if [ ${devicename:0:4} = "loop" ]; then
+        subdevice="${1}p"
+    fi
+
 	echo "Delete Existing Partition Table"
 	sudo dd if=/dev/zero of=$1 bs=1M count=1 >> ${logfile} 
 
@@ -121,6 +125,10 @@ mountPartitions ()
     devicename=${1##/*/}
     subdevice=$1;
     if [ ${devicename:0:6} = "mmcblk" ]; then
+        subdevice="${1}p"
+    fi
+
+    if [ ${devicename:0:4} = "loop" ]; then
         subdevice="${1}p"
     fi
 
