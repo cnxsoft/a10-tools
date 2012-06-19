@@ -39,6 +39,10 @@ partitionSD () {
         subdevice="${1}p"
     fi
 
+    if [ ${devicename:0:4} = "loop" ]; then
+        subdevice="${1}p"
+    fi
+
 	echo "Delete Existing Partition Table"
 	sudo dd if=/dev/zero of=$1 bs=1M count=1 >> ${logfile} 
 
@@ -63,13 +67,13 @@ partitionSD () {
 		exit 1
 	fi 
 	echo "Format Partition 1 to VFAT"
-	sudo mkfs.vfat ${subdevice}1 >> ${logfile}
+	sudo mkfs.vfat -I ${subdevice}1 >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to format ${subdevice}1 partition"
 		exit 1
 	fi 
 	echo "Format Partition 2 to EXT-4"
-	sudo mkfs.ext4 ${subdevice}2 >> ${logfile}
+	sudo mkfs.ext4  ${subdevice}2 >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to format ${subdevice}2 partition"
 		exit 1
@@ -121,6 +125,10 @@ mountPartitions ()
     devicename=${1##/*/}
     subdevice=$1;
     if [ ${devicename:0:6} = "mmcblk" ]; then
+        subdevice="${1}p"
+    fi
+
+    if [ ${devicename:0:4} = "loop" ]; then
         subdevice="${1}p"
     fi
 
