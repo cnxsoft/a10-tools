@@ -92,7 +92,7 @@ fi
 if [ ! -f .linux-allwinner ]
 then
     echo "Checking out linux source code `pwd`"
-    if [ ! -d linux-allwinner.git ]; then
+    if [ ! -d linux-allwinner ]; then
         try git clone git://github.com/amery/linux-allwinner.git --depth=1 >> ${make_log}
     fi
     try pushd linux-allwinner >> ${make_log} 2>&1
