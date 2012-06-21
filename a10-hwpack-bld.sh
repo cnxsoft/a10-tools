@@ -81,7 +81,7 @@ then
     try pushd uboot-allwinner >> ${make_log} 2>&1
     echo "Temporarly patch for v2011.09-sun4i"
     echo "Disable once https://github.com/hno/uboot-allwinner/issues/10 is fixed"
-    patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
+    try patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
     echo "Building u-boot"
     try make sun4i CROSS_COMPILE=${cross_compiler} -j2 >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
@@ -99,8 +99,14 @@ then
     try git checkout allwinner-v3.0-android-v2 >> ${make_log} 2>&1
     echo "Building linux"
     # cnxsoft: do we need a separate config per device ?
-    try make ARCH=arm sun4i_defconfig >> ${make_log} 2>&1
-    try make ARCH=arm oldconfig >> ${make_log} 2>&1
+    if [ -f ../a10-config/kernel/${board}.config ]; then
+       echo "Use custom kernel configuration"
+       try cp ../a10-config/kernel/${board}.config .config >> ${make_log} 2>&1
+       try make ARCH=arm oldconfig >> ${make_log} 2>&1
+    else
+       echo "Use default kernel configuration"
+       try make ARCH=arm sun4i_defconfig >> ${make_log} 2>&1
+    fi
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j2 uImage >> ${make_log} 2>&1
     echo "Building the kernel modules"
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j2 INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
