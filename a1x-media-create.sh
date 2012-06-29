@@ -2,10 +2,13 @@
 # Usage ./makeSD.sh /dev/sdx hwpack rootfs
 
 logfile=a1x-media-create.log
+hwpack_update_only=0
 
 checkSyntax () {
 	if [ -z $1 ] | [ -z $2 ] | [ -z $3 ]; then
 		echo "Usage: $0 [device] [hwpack] [rootfs]"
+                echo "Write norootfs for [rootfs] if you want to only update" 
+                echo "u-boot, script.bin, the kernel and modules"
 		exit 1
 	fi
 
@@ -18,10 +21,14 @@ checkSyntax () {
 		echo "File $2 not found"
 		exit 1
 	fi
-	if  [ ! -f $3 ]; then
+        if [ $3 != norootfs ]; then
+	    if  [ ! -f $3 ]; then
 		echo "File $3 not found"
 		exit 1
-	fi
+	    fi
+        else
+            hwpack_update_only=1;
+        fi
 }
 
 umountSD () {
@@ -184,16 +191,18 @@ copyData ()
 		echo "Failed to copy VFAT partition data to SD Card"
 		cleanup
 	fi 
-	echo "Copy rootfs partition files to SD Card"
-        if [ -d rootfs.tmp/etc ]; then
-           echo "Standard rootfs"
-	   sudo cp -a rootfs.tmp/* mntSDrootfs >> ${logfile}
-        elif [ -d rootfs.tmp/binary/boot/filesystem.dir ]; then
-           echo "Linaro rootfs"
-	   sudo cp -a rootfs.tmp/binary/boot/filesystem.dir/* mntSDrootfs >> ${logfile}
-        else
-           echo "Unsupported rootfs"
-           exit 1
+        if [ ${hwpack_update_only} -eq 0 ]; then 
+	    echo "Copy rootfs partition files to SD Card"
+            if [ -d rootfs.tmp/etc ]; then
+               echo "Standard rootfs"
+	       sudo cp -a rootfs.tmp/* mntSDrootfs >> ${logfile}
+            elif [ -d rootfs.tmp/binary/boot/filesystem.dir ]; then
+               echo "Linaro rootfs"
+	       sudo cp -a rootfs.tmp/binary/boot/filesystem.dir/* mntSDrootfs >> ${logfile}
+            else
+               echo "Unsupported rootfs"
+               exit 1
+            fi
         fi
 	if [ $? -ne 0 ]; then
 		echo "Failed to copy rootfs partition data to SD Card"
@@ -209,8 +218,12 @@ copyData ()
 
 cleanup ()
 {
-        rm -rf hwpack
-        sudo rm -rf rootfs.tmp
+        if [ -d hwpack ]; then
+            rm -rf hwpack
+        fi
+        if [ -d rootfs.tmp ]; then
+            sudo rm -rf rootfs.tmp
+        fi
 	umountPart mntSDvfat "VFAT Partition (SD)"
 	umountPart mntSDrootfs "EXT4 Partition (SD)"
 	exit
@@ -220,9 +233,13 @@ cleanup ()
 echo "a1x-media-create log file" > ${logfile} 
 checkSyntax $1 $2 $3
 umountSD $1
-partitionSD $1 
+if [ ${hwpack_update_only} -eq 0 ]; then 
+    partitionSD $1 
+fi
 extractHWPack $2
-extractRootfs $3
+if [ ${hwpack_update_only} -eq 0 ]; then 
+    extractRootfs $3
+fi
 copyUbootSpl $1 hwpack/bootloader/sun4i-spl.bin
 copyUboot $1 hwpack/bootloader/u-boot.bin 
 mountPartitions $1
