@@ -79,9 +79,15 @@ then
         try git clone https://github.com/hno/uboot-allwinner.git --depth=1 >> ${make_log}
     fi
     try pushd uboot-allwinner >> ${make_log} 2>&1
-    echo "Temporarly patch for v2011.09-sun4i"
-    echo "Disable once https://github.com/hno/uboot-allwinner/issues/10 is fixed"
-    try patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
+    is_server=`echo $1 | grep "-server"`
+    if [ -z $is_server ]; then
+        echo "Temporarly patch for v2011.09-sun4i"
+        echo "Disable once https://github.com/hno/uboot-allwinner/issues/10 is fixed"
+        try patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
+    else
+        echo "Server build"
+        try patch -p1 < ../a10-config/patch/u-boot-rootwait-server.patch
+    fi
     echo "Building u-boot"
     try make sun4i CROSS_COMPILE=${cross_compiler} -j2 >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
