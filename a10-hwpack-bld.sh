@@ -53,6 +53,15 @@ try pushd bld_a10_hwpack_${blddate}
 make_log=`pwd`/${board}_${blddate}.log
 echo "Build hwpack for ${board} - ${blddate}" > ${make_log}
 
+num_core=`grep 'processor' /proc/cpuinfo | sort -u | wc -l`
+num_jobs=`expr ${num_core} \* 3 / 2`
+if [ ${num_jobs} -le 2 ]; then
+    num_jobs=2
+fi
+
+echo Number of detected cores = ${num_proc} > ${make_log}
+echo Number of jobs = ${num_jobs} > ${make_log}
+
 try mkdir -p ${board}_hwpack/bootloader
 try mkdir -p ${board}_hwpack/kernel
 try mkdir -p ${board}_hwpack/rootfs
@@ -89,7 +98,7 @@ then
         try patch -p1 < ../a10-config/patch/u-boot-rootwait-server.patch
     fi
     echo "Building u-boot"
-    try make sun4i CROSS_COMPILE=${cross_compiler} -j2 >> ${make_log} 2>&1
+    try make sun4i CROSS_COMPILE=${cross_compiler} -j ${num_jobs} >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
     touch .uboot-allwinner
 fi
@@ -113,10 +122,10 @@ then
        echo "Use default kernel configuration"
        try make ARCH=arm sun4i_defconfig >> ${make_log} 2>&1
     fi
-    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j2 uImage >> ${make_log} 2>&1
+    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} uImage >> ${make_log} 2>&1
     echo "Building the kernel modules"
-    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j2 INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
-    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j2 INSTALL_MOD_PATH=output modules_install >> ${make_log} 2>&1
+    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
+    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules_install >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
     touch .linux-allwinner
 fi
