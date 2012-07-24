@@ -51,19 +51,19 @@ popd
 ftpdir=ftp/${blddate}
 mkdir -p ${ftpdir}/server
 echo "Copy STB hardware packs"
-cp stb/bld_a10_hwpack_${blddate}/*.7z $(ftpdir)
+cp stb/bld_a10_hwpack_${blddate}/*.7z ${ftpdir}
 echo "Copy STB Kernel"
 cp stb/bld_a10_hwpack_${blddate}/linux-allwinner/arch/arm/boot/uImage ${ftpdir}
 echo "Copy STB U-boot"
 cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/u-boot.bin ${ftpdir}
-cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sun4i-spl.bin $(ftpdir)
+cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sun4i-spl.bin ${ftpdir}
 echo "Copy Log files"
-cp stb/bld_a10_hwpack_${blddate}/*.log $(ftpdir)
+cp stb/bld_a10_hwpack_${blddate}/*.log ${ftpdir}
 
 echo "Copy server hardware packs"
-cp server/bld_a10_hwpack_${blddate}/*.7z $(ftpdir)/server
+cp server/bld_a10_hwpack_${blddate}/*.7z ${ftpdir}/server
 echo "Copy server Kernel"
-cp server/bld_a10_hwpack_${blddate}/linux-allwinner/arch/arm/boot/uImage $(ftpdir)/server
+cp server/bld_a10_hwpack_${blddate}/linux-allwinner/arch/arm/boot/uImage ${ftpdir}/server
 echo "Copy server U-boot"
 cp server/bld_a10_hwpack_${blddate}/uboot-allwinner/u-boot.bin ${ftpdir}/server
 cp server/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sun4i-spl.bin ${ftpdir}/server
@@ -72,15 +72,17 @@ cp server/bld_a10_hwpack_${blddate}/*.log ${ftpdir}/server
 
 echo "Copy Files to Server"
 pushd ftp
-#scp -r *  buildbot@linux-sunxi.org:nightly
-ln -s ${blddate} latest
-# We need to tar the file to properly transfer "latest" symlink
-tar -c latest  | ssh -C buildbot@linux-sunxi.org "tar -C  nightly/ -x"
+scp -r ${blddate} * buildbot@linux-sunxi.org:nightly
 if [ $? -eq 0 ]; then
     echo "Copy to http://dl.linux-sunxi.org/nightly... OK" >> ${bldmail}
 else
     echo "Copy to http://dl.linux-sunxi.org/nightly... FAIL" >> ${bldmail}
 fi
+if [ ! -e latest ]; then
+    ln -s ${blddate} latest
+fi
+# We need to tar the file to properly transfer "latest" symlink
+tar -c latest | ssh -C buildbot@linux-sunxi.org "tar -C  nightly/ -x"
 popd
 
 #mkdir ~/Dropbox/nightly/${blddate}
