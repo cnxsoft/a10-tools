@@ -139,11 +139,11 @@ fi
 # Copy files in hwpack directory
 echo "Copy files to hardware pack directory"
 try cp linux-allwinner/output/lib ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
-try cp a10-bin/armel/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
+try cp a10-bin/armhf/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 # Only support Debian/Ubuntu for now
 try cp a10-config/rootfs/debian-ubuntu/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 try mkdir -p ${board}_hwpack/rootfs/a10-bin-backup >> ${make_log} 2>&1
-try cp a10-bin/armel/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 2>&1
+try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 2>&1
 try cp linux-allwinner/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/script.fex/${board}.bin ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp uboot-allwinner/spl/sun4i-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
