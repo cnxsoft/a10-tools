@@ -28,9 +28,14 @@ bldhwpack () {
 # Delete build directories older than 2 days
 find /home/buildbot/allwinner/build/2* -maxdepth 0 -mtime +1 -exec rm -rf {} \;
 
+bld_start_time=`date +%s`
+
+
+
 mkdir -p ~/allwinner/build/${blddate}
 pushd ~/allwinner/build/${blddate}
 echo "Build results - ${blddate}" > ${bldmail}
+echo "" >> ${bldmail}
 
 git clone git://github.com/cnxsoft/a10-tools.git
 
@@ -41,6 +46,7 @@ cp ../a10-tools/a10-hwpack-bld.sh .
 bldhwpack mele-a1000 .
 bldhwpack mele-a1000-vga .
 bldhwpack mk802 .
+bldhwpack oval-elephant .
 popd
 
 #server builds
@@ -49,6 +55,10 @@ pushd server
 cp ../a10-tools/a10-hwpack-bld.sh .
 bldhwpack mele-a1000-server server
 popd
+
+bld_end_time=`date +%s`
+
+bld_time=`expr $bld_end_time - $bld_start_time`
 
 #Prepare files for upload
 ftpdir=ftp/${blddate}
@@ -92,6 +102,9 @@ popd
 #cp ftp/* ~/Dropbox/nightly/${blddate} -rf
 
 popd
+
+echo "" >> ${bldmail}
+echo "Build Time - $bld_time seconds" >> ${bldmail}
 
 echo "Email build Result"
 SUBJECT="A10 Build - ${blddate} - ${bldresult}"
