@@ -43,7 +43,7 @@ failure ()
 if [ -z $1 ]; then
     echo "Usage: ./a10-hwpack-bld.sh product_name"
     echo ""
-    echo "Products currently supported: mele-a1000 and mele-a1000-vga"
+    echo "Products currently supported: mele-a1000, mele-a1000-vga, mele-a1000-server. mk802 and oval-elephant"
     exit 1
 fi
 
@@ -80,6 +80,17 @@ then
     touch .script.${board}
 fi
 
+# Generate boot.scr
+if [ ! -f .bootscr.${board} ]
+then
+    try pushd a10-config/uboot >> ${make_log} 2>&1
+    echo "Generating ${board}.scr file"
+    try mkimage -A arm -O u-boot -T script -C none -n "boot" -d ${board}.cmd ${board}.scr
+    popd >> ${make_log} 2>&1
+    touch .bootscr.${board}
+fi
+
+# Build u-boot
 if [ ! -f .uboot-allwinner ]
 then
     # Build u-boot
@@ -88,15 +99,16 @@ then
         try git clone https://github.com/hno/uboot-allwinner.git --depth=1 >> ${make_log}
     fi
     try pushd uboot-allwinner >> ${make_log} 2>&1
-    is_server=`echo $1 | grep "-server"`
-    if [ -z $is_server ]; then
-        echo "Temporarly patch for v2011.09-sun4i"
-        echo "Disable once https://github.com/hno/uboot-allwinner/issues/10 is fixed"
-        try patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
-    else
-        echo "Server build"
-        try patch -p1 < ../a10-config/patch/u-boot-rootwait-server.patch
-    fi
+# We're now using boot.scr file, and this part is not needed
+#    is_server=`echo $1 | grep "-server"`
+#    if [ -z $is_server ]; then
+#        echo "Temporarly patch for v2011.09-sun4i"
+#        echo "Disable once https://github.com/hno/uboot-allwinner/issues/10 is fixed"
+#        try patch -p1 < ../a10-config/patch/u-boot-rootwait.patch
+#    else
+#        echo "Server build"
+#        try patch -p1 < ../a10-config/patch/u-boot-rootwait-server.patch
+#    fi
     echo "Building u-boot"
     try make sun4i CROSS_COMPILE=${cross_compiler} -j ${num_jobs} >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
@@ -146,6 +158,7 @@ try mkdir -p ${board}_hwpack/rootfs/a10-bin-backup >> ${make_log} 2>&1
 try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 2>&1
 try cp linux-allwinner/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/script.fex/${board}.bin ${board}_hwpack/kernel >> ${make_log} 2>&1
+try cp a10-config/uboot/${board}.scr ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp uboot-allwinner/spl/sun4i-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
 try cp uboot-allwinner/u-boot.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
 
