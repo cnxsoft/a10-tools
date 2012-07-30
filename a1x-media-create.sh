@@ -190,7 +190,15 @@ copyData ()
 	if [ $? -ne 0 ]; then
 		echo "Failed to copy VFAT partition data to SD Card"
 		cleanup
-	fi 
+	fi
+	if [ -f hwpack/kernel/*.scr ]; then 
+		sudo cp hwpack/kernel/*.scr mntSDvfat/boot.scr >> ${logfile}
+		if [ $? -ne 0 ]; then
+			echo "Failed to copy VFAT partition data to SD Card"
+			cleanup
+		fi
+	fi
+	 
         if [ ${hwpack_update_only} -eq 0 ]; then 
 	    echo "Copy rootfs partition files to SD Card"
             if [ -d rootfs.tmp/etc ]; then
