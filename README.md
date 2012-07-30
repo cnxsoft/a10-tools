@@ -15,3 +15,5 @@ a1x-media-crete.sh - Script to generate a bootable SD card for A10 devices
 
 nightly.sh - Script to build hwpack for different hardware and flavors
 
+a1x-initramfs.sh - Script to be executed in the target board to generate initramfs and copy it to the boot partition
+
