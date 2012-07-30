@@ -154,6 +154,8 @@ try cp linux-allwinner/output/lib ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 try cp a10-bin/armhf/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 # Only support Debian/Ubuntu for now
 try cp a10-config/rootfs/debian-ubuntu/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
+try cp a10-tools/a1x-initramfs.sh ${board}_hwpack/rootfs/usr/bin >> ${make_log} 2>&1
+try chmod 755 ${board}_hwpack/rootfs/usr/bin/a1x-initramfs.sh  >> ${make_log} 2>&1
 try mkdir -p ${board}_hwpack/rootfs/a10-bin-backup >> ${make_log} 2>&1
 try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 2>&1
 try cp linux-allwinner/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
