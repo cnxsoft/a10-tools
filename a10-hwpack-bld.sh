@@ -136,7 +136,10 @@ then
     fi
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} uImage >> ${make_log} 2>&1
     echo "Building the kernel modules"
-    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
+#    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
+# Only build modules with 2 jobs to avoid race condition leading to:
+# fixdep: error opening depfile: drivers/gpu/mali/mali/linux/.mali_osk_atomics.o.d: No such file or directory
+    try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j 2 INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules_install >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
     touch .linux-allwinner
