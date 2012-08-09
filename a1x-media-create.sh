@@ -108,7 +108,7 @@ extractRootfs () {
     elif [ ${fileext} == "7z" ] | [ ${fileext} == "lzma" ]; then 
         sudo 7z x ../$1
     elif [ ${fileext} == "xz" ]; then
-	sudo tar xJf ../$1
+        sudo tar xJf ../$1
     else
 	echo "Unknown file extension: ${fileext}"
         popd
