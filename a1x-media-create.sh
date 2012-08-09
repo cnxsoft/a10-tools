@@ -219,6 +219,14 @@ copyData ()
 		cleanup
 	fi 
         echo "Copy hwpack rootfs files"
+	# Fedora uses a softlink for lib.  Adjust, if needed.
+	if [ -L mntSDrootfs/lib ]; then
+		# Find where it points.  For Fedora, we expect usr/lib.
+		DEST=`/bin/ls -l mntSDrootfs/lib | sed -e 's,.* ,,'`
+		if [ "$DEST" = "usr/lib" ]; then
+			mv hwpack/rootfs/lib hwpack/rootfs/usr
+		fi
+	fi
         sudo cp -a hwpack/rootfs/* mntSDrootfs >> ${logfile}
 	if [ $? -ne 0 ]; then
 		echo "Failed to copy rootfs hwpack files to SD Card"
