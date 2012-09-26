@@ -69,7 +69,7 @@ echo "Copy STB Kernel"
 cp stb/bld_a10_hwpack_${blddate}/linux-allwinner/arch/arm/boot/uImage ${ftpdir}
 echo "Copy STB U-boot"
 cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/u-boot.bin ${ftpdir}
-cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sun4i-spl.bin ${ftpdir}
+cp stb/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sunxi-spl.bin ${ftpdir}
 echo "Copy Log files"
 cp stb/bld_a10_hwpack_${blddate}/*.log ${ftpdir}
 
@@ -79,7 +79,7 @@ echo "Copy server Kernel"
 cp server/bld_a10_hwpack_${blddate}/linux-allwinner/arch/arm/boot/uImage ${ftpdir}/server
 echo "Copy server U-boot"
 cp server/bld_a10_hwpack_${blddate}/uboot-allwinner/u-boot.bin ${ftpdir}/server
-cp server/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sun4i-spl.bin ${ftpdir}/server
+cp server/bld_a10_hwpack_${blddate}/uboot-allwinner/spl/sunxi-spl.bin ${ftpdir}/server
 echo "Copy Log files"
 cp server/bld_a10_hwpack_${blddate}/*.log ${ftpdir}/server
 

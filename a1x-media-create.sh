@@ -258,7 +258,7 @@ extractHWPack $2
 if [ ${hwpack_update_only} -eq 0 ]; then 
     extractRootfs $3
 fi
-copyUbootSpl $1 hwpack/bootloader/sun4i-spl.bin
+copyUbootSpl $1 hwpack/bootloader/sunxi-spl.bin
 copyUboot $1 hwpack/bootloader/u-boot.bin 
 mountPartitions $1
 copyData 
