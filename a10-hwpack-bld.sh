@@ -165,7 +165,7 @@ try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 
 try cp linux-allwinner/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/script.fex/${board}.bin ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/uboot/${board}.scr ${board}_hwpack/kernel/boot.scr >> ${make_log} 2>&1
-try cp uboot-allwinner/spl/sun4i-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
+try cp uboot-allwinner/spl/sunxi-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
 try cp uboot-allwinner/u-boot.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
 
 # Compress the hwpack files
