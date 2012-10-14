@@ -122,7 +122,7 @@ then
     if [ ! -d linux-allwinner ]; then
         try git clone git://github.com/linux-sunxi/linux-sunxi.git --depth=1 >> ${make_log}
     fi
-    try pushd linux-allwinner >> ${make_log} 2>&1
+    try pushd linux-sunxi >> ${make_log} 2>&1
 # Just use the default branch
 #    try git checkout allwinner-v3.0-android-v2 >> ${make_log} 2>&1
     echo "Building linux"
@@ -154,7 +154,7 @@ fi
 
 # Copy files in hwpack directory
 echo "Copy files to hardware pack directory"
-try cp linux-allwinner/output/lib ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
+try cp linux-sunxi/output/lib ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 try cp a10-bin/armhf/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
 # Only support Debian/Ubuntu for now
 try cp a10-config/rootfs/debian-ubuntu/* ${board}_hwpack/rootfs -rf >> ${make_log} 2>&1
@@ -163,7 +163,7 @@ try cp ../../a10-tools/a1x-initramfs.sh ${board}_hwpack/rootfs/usr/bin >> ${make
 try chmod 755 ${board}_hwpack/rootfs/usr/bin/a1x-initramfs.sh  >> ${make_log} 2>&1
 try mkdir -p ${board}_hwpack/rootfs/a10-bin-backup >> ${make_log} 2>&1
 try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 2>&1
-try cp linux-allwinner/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
+try cp linux-sunxi/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/script.fex/${board}.bin ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/uboot/${board}.scr ${board}_hwpack/kernel/boot.scr >> ${make_log} 2>&1
 try cp uboot-allwinner/spl/sunxi-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
