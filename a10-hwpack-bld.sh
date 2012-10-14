@@ -116,10 +116,10 @@ then
 fi
 
 # Build the linux kernel
-if [ ! -f .linux-allwinner ]
+if [ ! -f .linux-sunxi ]
 then
     echo "Checking out linux source code `pwd`"
-    if [ ! -d linux-allwinner ]; then
+    if [ ! -d linux-sunxi ]; then
         try git clone git://github.com/linux-sunxi/linux-sunxi.git --depth=1 >> ${make_log}
     fi
     try pushd linux-sunxi >> ${make_log} 2>&1
@@ -143,7 +143,7 @@ then
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j 2 INSTALL_MOD_PATH=output modules >> ${make_log} 2>&1
     try make ARCH=arm CROSS_COMPILE=${cross_compiler} -j ${num_jobs} INSTALL_MOD_PATH=output modules_install >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
-    touch .linux-allwinner
+    touch .linux-sunxi
 fi
 
 # Get binary files
