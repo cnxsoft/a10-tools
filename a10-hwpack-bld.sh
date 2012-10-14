@@ -120,10 +120,11 @@ if [ ! -f .linux-allwinner ]
 then
     echo "Checking out linux source code `pwd`"
     if [ ! -d linux-allwinner ]; then
-        try git clone git://github.com/amery/linux-allwinner.git --depth=1 >> ${make_log}
+        try git clone git://github.com/linux-sunxi/linux-sunxi.git --depth=1 >> ${make_log}
     fi
     try pushd linux-allwinner >> ${make_log} 2>&1
-    try git checkout allwinner-v3.0-android-v2 >> ${make_log} 2>&1
+# Just use the default branch
+#    try git checkout allwinner-v3.0-android-v2 >> ${make_log} 2>&1
     echo "Building linux"
     # cnxsoft: do we need a separate config per device ?
     if [ -f ../a10-config/kernel/${board}.config ]; then
