@@ -25,12 +25,10 @@ bldhwpack () {
 }
 
 # "Main"
-# Delete build directories older than 2 days
-find /home/buildbot/allwinner/build/2* -maxdepth 0 -mtime +1 -exec rm -rf {} \;
+# Delete build directories older than 1 day to save space
+find /home/buildbot/allwinner/build/2* -maxdepth 0 -mtime +0 -exec rm -rf {} \;
 
 bld_start_time=`date +%s`
-
-
 
 mkdir -p ~/allwinner/build/${blddate}
 pushd ~/allwinner/build/${blddate}
