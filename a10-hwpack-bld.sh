@@ -91,14 +91,14 @@ then
 fi
 
 # Build u-boot
-if [ ! -f .uboot-allwinner ]
+if [ ! -f .u-boot-sunxi ]
 then
     # Build u-boot
     echo "Checking out u-boot source code"
-    if [ ! -d uboot-allwinner ]; then
-        try git clone https://github.com/hno/uboot-allwinner.git --depth=1 >> ${make_log}
+    if [ ! -d u-boot-sunxi ]; then
+        try git clone https://github.com/linux-sunxi/u-boot-sunxi.git --depth=1 >> ${make_log}
     fi
-    try pushd uboot-allwinner >> ${make_log} 2>&1
+    try pushd u-boot-sunxi >> ${make_log} 2>&1
 # We're now using boot.scr file, and this part is not needed
 #    is_server=`echo $1 | grep "-server"`
 #    if [ -z $is_server ]; then
@@ -112,7 +112,7 @@ then
     echo "Building u-boot"
     try make sun4i CROSS_COMPILE=${cross_compiler} -j ${num_jobs} >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
-    touch .uboot-allwinner
+    touch .u-boot-sunxi
 fi
 
 # Build the linux kernel
@@ -166,8 +166,8 @@ try cp a10-bin/armhf/* ${board}_hwpack/rootfs/a10-bin-backup -rf >> ${make_log} 
 try cp linux-sunxi/arch/arm/boot/uImage ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/script.fex/${board}.bin ${board}_hwpack/kernel >> ${make_log} 2>&1
 try cp a10-config/uboot/${board}.scr ${board}_hwpack/kernel/boot.scr >> ${make_log} 2>&1
-try cp uboot-allwinner/spl/sunxi-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
-try cp uboot-allwinner/u-boot.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
+try cp u-boot-sunxi/spl/sunxi-spl.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
+try cp u-boot-sunxi/u-boot.bin ${board}_hwpack/bootloader >> ${make_log} 2>&1
 
 # Compress the hwpack files
 echo "Compress hardware pack file"
