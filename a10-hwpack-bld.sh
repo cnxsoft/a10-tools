@@ -99,6 +99,11 @@ then
         try git clone https://github.com/linux-sunxi/u-boot-sunxi.git --depth=1 >> ${make_log}
     fi
     try pushd u-boot-sunxi >> ${make_log} 2>&1
+# workaround hardfloat u-boot issue
+    try pushd arch/arm/cpu/armv7
+    try cat config.mk | sed s/-msoft-float// > config2.mk
+    try mv config2.mk config.mk
+    try popd
 # We're now using boot.scr file, and this part is not needed
 #    is_server=`echo $1 | grep "-server"`
 #    if [ -z $is_server ]; then
