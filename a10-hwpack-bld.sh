@@ -115,7 +115,8 @@ then
 #        try patch -p1 < ../a10-config/patch/u-boot-rootwait-server.patch
 #    fi
     echo "Building u-boot"
-    try make sun4i CROSS_COMPILE=${cross_compiler} -j ${num_jobs} >> ${make_log} 2>&1
+#Following changes in u-boot, only support Mele A1000 for now
+    try make mele_a1000 CROSS_COMPILE=${cross_compiler} -j ${num_jobs} >> ${make_log} 2>&1
     popd >> ${make_log} 2>&1
     touch .u-boot-sunxi
 fi
