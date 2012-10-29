@@ -43,8 +43,8 @@ pushd stb
 cp ../a10-tools/a10-hwpack-bld.sh .
 bldhwpack mele-a1000 .
 bldhwpack mele-a1000-vga .
-bldhwpack mk802 .
-bldhwpack oval-elephant .
+#bldhwpack mk802 .
+#bldhwpack oval-elephant .
 popd
 
 #server builds
